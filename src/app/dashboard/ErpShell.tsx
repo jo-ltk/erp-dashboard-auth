@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Menu, UserRound, Users, X } from 'lucide-react'
+import { Menu, UserRound, X } from 'lucide-react'
 import type { PublicUser } from '@/lib/users'
 import BrandLockup from '@/components/BrandLockup'
 import LogoutButton from './LogoutButton'
@@ -12,7 +12,6 @@ import LogoutButton from './LogoutButton'
  */
 const SECTIONS = [
   { id: 'account-details', label: 'Account Details', index: '01', icon: UserRound },
-  { id: 'other-accounts', label: 'User Directory', index: '02', icon: Users },
 ] as const
 
 export default function ErpShell({
