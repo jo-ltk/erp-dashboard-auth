@@ -1,26 +1,949 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ==========================================================================
+   ERP DESIGN SYSTEM — "Aurora Slate"
+   --------------------------------------------------------------------------
+   A soft, professional palette for a modern ERP product:
+      · soft cool neutrals instead of paper white / graphite black
+      · soft indigo primary with a violet → cyan edge
+      · cyan accents for highlights, active states and toolbars
+      · uniform rounding (20–28px) and low-contrast ambient elevation
+   Typography is Poppins throughout — hierarchy comes from weight, not family.
+   Presentation only — no behaviour, routing or data contract lives here.
+   ========================================================================== */
+
+@theme {
+  /* --- Surfaces: soft cool neutrals, never pure black or plain white ----- */
+  --color-canvas: #edf1fa;
+  --color-canvas-deep: #e3e9f7;
+  --color-surface: #fdfdff;
+  --color-surface-muted: #f6f8fd;
+  --color-surface-sunken: #eff3fc;
+  --color-hairline: #e2e8f5;
+  --color-hairline-strong: #d1daee;
+
+  /* --- Ink: deep navy-slate hierarchy ------------------------------------ */
+  --color-ink: #1d2740;
+  --color-ink-soft: #46536f;
+  --color-ink-muted: #6c7a95;
+  --color-ink-faint: #9aa5bd;
+
+  /* --- Primary: soft indigo --------------------------------------------- */
+  --color-primary: #5661e6;
+  --color-primary-strong: #4149cf;
+  --color-primary-soft: #ebeeff;
+  --color-primary-tint: #f4f6ff;
+  --color-primary-ring: #c7ceff;
+
+  /* --- Accent: cyan edge (the futuristic lift) -------------------------- */
+  --color-accent: #17a8c4;
+  --color-accent-strong: #0f8ea8;
+  --color-accent-soft: #e6f6fa;
+  --color-accent-tint: #f2fbfd;
+  --color-accent-ring: #bfe6ee;
+
+  /* Legacy accent slot names — the violet and cyan partners of the indigo
+     primary, so any older `violet` / `cyan` utility still lands on palette. */
+  --color-violet: #8b5cf6;
+  --color-cyan: #17a8c4;
+  --color-cyan-soft: #e6f6fa;
+
+  /* --- Semantic ---------------------------------------------------------- */
+  --color-mint: #10a37a;
+  --color-mint-soft: #e5f6f0;
+  --color-amber: #c4861b;
+  --color-amber-soft: #fdf3e1;
+  --color-rose: #d9525f;
+  --color-rose-soft: #fdecef;
+
+  /* --- Aliases kept on-palette so older utility names still render ------- */
+  --color-paper: #edf1fa;
+  --color-paper-shadow: #e2e8f5;
+  --color-draft: #d1daee;
+  --color-graphite: #46536f;
+  --color-deep: #1d2740;
+  --color-margin: #2a3552;
+  --color-abyss: #232f4d;
+  --color-void: #1a2338;
+  --color-silver: #6c7a95;
+  --color-chalk: #f2f5ff;
+  --color-glow: #c9d3ee;
+  --color-verify: #10a37a;
+  --color-verify-soft: #e5f6f0;
+  --color-pending: #c4861b;
+  --color-pending-soft: #fdf3e1;
+  --color-alert: #d9525f;
+  --color-alert-soft: #fdecef;
+
+  /* --- Typography: Poppins for body, display and figures ----------------- */
+  --font-sans: var(--font-poppins), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+
+  /* --- Geometry: one rounded-3xl rounding for fields, buttons and cards -- */
+  --radius-control: 24px;
+  --radius-field: 24px;
+  --radius-card: 24px;
+  --radius-panel: 24px;
+  /* Small marks (initials, icon tiles) stay soft squares, never clamped into
+     circles when the 24px control radius would exceed half their height. */
+  --radius-tile: 15px;
+
+  /* --- Elevation: soft ambient light, never a hard drop shadow ----------- */
+  --shadow-panel: 0 1px 2px rgba(29, 39, 64, 0.04), 0 14px 34px -20px rgba(43, 58, 103, 0.3);
+  --shadow-lift: 0 2px 8px rgba(29, 39, 64, 0.06), 0 30px 64px -28px rgba(43, 58, 103, 0.38);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  html {
+    background-color: var(--color-canvas);
+    -webkit-tap-highlight-color: transparent;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: var(--color-primary-soft);
+    color: var(--color-primary-strong);
+  }
+
+  /* Rounded scrollbar, tinted to the canvas rather than the ink. */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--color-canvas);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-hairline-strong);
+    border: 2px solid var(--color-canvas);
+    border-radius: 999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-ink-faint);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ==========================================================================
+   COMPONENT LAYER
+   Declared in Tailwind's `components` layer so utility classes in markup can
+   still override any default (colour, spacing, size) per instance.
+   ========================================================================== */
+
+@layer components {
+  /* ========================================================================
+     TEXTURES & AMBIENT SURFACES
+     ======================================================================== */
+
+  /* Ambient canvas: indigo, cyan and violet light pools over a cool neutral. */
+  .app-canvas {
+    background-color: var(--color-canvas);
+    background-image:
+      radial-gradient(ellipse 70% 55% at 6% -12%, rgba(86, 97, 230, 0.14) 0%, transparent 58%),
+      radial-gradient(ellipse 60% 50% at 99% 2%, rgba(139, 92, 246, 0.2) 0%, transparent 55%),
+      radial-gradient(ellipse 85% 65% at 50% 118%, rgba(23, 168, 196, 0.12) 0%, transparent 62%);
+  }
+
+  /* Auth canvas: brighter light pools plus a fine point field for depth. */
+  .auth-canvas {
+    background-color: var(--color-canvas);
+    background-image:
+      radial-gradient(ellipse 60% 45% at 6% -8%, rgba(86, 97, 230, 0.22) 0%, transparent 58%),
+      radial-gradient(ellipse 55% 45% at 99% 4%, rgba(139, 92, 246, 0.3) 0%, transparent 55%),
+      radial-gradient(ellipse 70% 55% at 62% 112%, rgba(23, 168, 196, 0.16) 0%, transparent 60%),
+      radial-gradient(rgba(86, 97, 230, 0.09) 1px, transparent 1.3px);
+    background-size: auto, auto, auto, 24px 24px;
+  }
+
+  /* Frosted bar: sticky navigation and floating toolbars. */
+  .glass-bar {
+    background: rgba(255, 253, 247, 0.82);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    backdrop-filter: blur(18px) saturate(160%);
+  }
+
+  /* Branded panel: indigo → violet → cyan wash, with light text. */
+  .brand-panel {
+    background-color: #4149cf;
+    background-image:
+      radial-gradient(ellipse 85% 55% at 12% -6%, rgba(139, 92, 246, 0.34) 0%, transparent 58%),
+      radial-gradient(ellipse 78% 62% at 104% 106%, rgba(23, 168, 196, 0.55) 0%, transparent 60%),
+      linear-gradient(150deg, #5a63e9 0%, #6b5cf0 52%, #4a54d6 100%);
+  }
+
+  /* Faint point matrix, laid over gradient surfaces. */
+  .dot-matrix {
+    background-image: radial-gradient(rgba(253, 253, 255, 0.4) 1px, transparent 1.4px);
+    background-size: 20px 20px;
+  }
+
+  /* Decorative light orbs, blurred into the canvas. */
+  .orb {
+    position: absolute;
+    border-radius: 999px;
+    filter: blur(52px);
+    pointer-events: none;
+  }
+
+  .orb-primary {
+    background: radial-gradient(circle, rgba(86, 97, 230, 0.42) 0%, rgba(86, 97, 230, 0) 70%);
+  }
+
+  .orb-violet {
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.46) 0%, rgba(139, 92, 246, 0) 70%);
+  }
+
+  .orb-cyan {
+    background: radial-gradient(circle, rgba(23, 168, 196, 0.42) 0%, rgba(23, 168, 196, 0) 70%);
+  }
+
+  /* ========================================================================
+     BRAND FILLS, CARDS & IDENTITY TILES
+     ======================================================================== */
+
+  .bg-brand {
+    background-image: linear-gradient(135deg, var(--color-primary-strong) 0%, var(--color-primary) 46%, var(--color-accent-strong) 104%, var(--color-accent) 140%);
+  }
+
+  .bg-brand-soft {
+    background-image: linear-gradient(115deg, var(--color-primary-soft) 0%, var(--color-accent-tint) 100%);
+  }
+
+  .bg-brand-primary {
+    background-image: linear-gradient(115deg, var(--color-primary-strong) 0%, var(--color-primary) 58%, var(--color-accent-strong) 132%);
+  }
+
+  .card {
+    position: relative;
+    background: var(--color-surface);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-panel);
+  }
+
+  .card-soft {
+    background: var(--color-surface-muted);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-card);
+  }
+
+  .card-inset {
+    background: var(--color-surface-sunken);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-field);
+  }
+
+  /* Rounded gradient tile carrying the product mark. */
+  .brand-tile {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-tile);
+    color: var(--color-chalk);
+    background-image: linear-gradient(135deg, var(--color-primary-strong) 0%, var(--color-primary) 60%, var(--color-accent-strong) 138%);
+    box-shadow: 0 12px 24px -14px rgba(86, 97, 230, 0.75);
+  }
+
+  /* Soft gradient square carrying initials (user chips, directory rows). */
+  .avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: var(--radius-tile);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--color-chalk);
+    background-image: linear-gradient(135deg, var(--color-primary-strong) 0%, var(--color-primary) 62%, var(--color-accent-strong) 140%);
+    box-shadow: 0 10px 22px -14px rgba(86, 97, 230, 0.8);
+  }
+
+  .divider {
+    height: 1px;
+    width: 100%;
+    background: var(--color-hairline);
+  }
+  /* ========================================================================
+     TYPOGRAPHY
+     display → Poppins 700: product and section headings
+     eyebrow → compact uppercase labels for structure, not decoration
+     body    → Poppins 400/500; numbers/IDs → Poppins with tabular figures
+     ======================================================================== */
+
+  .display {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    line-height: 1.2;
+  }
+
+  .eyebrow-sm {
+    font-family: var(--font-sans);
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    line-height: 1.3;
+  }
+
+  .eyebrow-lg {
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1.2;
+  }
+
+  /* Tabular figures keep IDs, counts and dates column-aligned. */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
+  }
+
+  /* ========================================================================
+     FORM CONTROLS — soft warm fields, deep-green focus ring
+     ======================================================================== */
+
+  .field-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--color-ink-soft);
+    margin-bottom: 0.4375rem;
+  }
+
+  /* Wrapper: icon, input and action share one rounded slot. */
+  .field {
+    display: flex;
+    align-items: center;
+    background: var(--color-surface-muted);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-field);
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+  }
+
+  .field:hover {
+    border-color: var(--color-hairline-strong);
+  }
+
+  .field:focus-within {
+    background: var(--color-surface);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 4px var(--color-primary-soft);
+  }
+
+  .field.is-error {
+    border-color: var(--color-rose);
+  }
+
+  .field.is-error:focus-within {
+    box-shadow: 0 0 0 4px var(--color-rose-soft);
+  }
+
+  .field-input {
+    width: 100%;
+    padding: 0.6875rem 0.875rem;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    background: transparent;
+    border: none;
+    color: var(--color-ink);
+    outline: none;
+  }
+
+  .field-input::placeholder {
+    color: var(--color-ink-faint);
+  }
+
+  /* An input that follows an icon slot tucks in against it. */
+  .field > .field-input:not(:first-child) {
+    padding-left: 0.25rem;
+  }
+
+  /* Reveal / clear affordance inside a field. */
+  .field-action {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.75rem;
+    color: var(--color-ink-muted);
+    background: transparent;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .field-action:hover {
+    color: var(--color-primary-strong);
+  }
+
+  /* Select: same slot as a field, with a drawn chevron. */
+  .select-slot {
+    position: relative;
+    background: var(--color-surface-muted);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-field);
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+  }
+
+  .select-slot:hover {
+    border-color: var(--color-hairline-strong);
+  }
+
+  .select-slot:focus-within {
+    background: var(--color-surface);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 4px var(--color-primary-soft);
+  }
+
+  .select-slot::after {
+    content: "";
+    position: absolute;
+    right: 0.9375rem;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    border-right: 2px solid var(--color-ink-muted);
+    border-bottom: 2px solid var(--color-ink-muted);
+    transform: translateY(-70%) rotate(45deg);
+    pointer-events: none;
+  }
+
+  .select-input {
+    width: 100%;
+    padding: 0.6875rem 2.25rem 0.6875rem 0.875rem;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    background: transparent;
+    border: none;
+    color: var(--color-ink);
+    outline: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  /* ========================================================================
+     BUTTONS
+     ======================================================================== */
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    border-radius: var(--radius-field);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: box-shadow 0.18s ease, background-color 0.18s ease, color 0.18s ease,
+      border-color 0.18s ease, transform 0.16s ease;
+  }
+
+  .btn:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  /* Primary: soft indigo with a cyan edge and a soft indigo glow. */
+  .btn-primary {
+    color: var(--color-chalk);
+    background-image: linear-gradient(115deg, var(--color-primary-strong) 0%, var(--color-primary) 62%, #5f68ea 100%);
+    box-shadow: 0 14px 28px -16px rgba(86, 97, 230, 0.85);
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background-image: linear-gradient(115deg, #5b64ea 0%, var(--color-primary) 62%, var(--color-accent-strong) 148%);
+    box-shadow: 0 18px 34px -14px rgba(86, 97, 230, 1);
+  }
+
+  /* Secondary: tinted surface with a hairline edge. */
+  .btn-secondary {
+    background: var(--color-surface);
+    color: var(--color-ink);
+    border-color: var(--color-hairline-strong);
+  }
+
+  .btn-secondary:hover:not(:disabled) {
+    border-color: var(--color-accent-ring);
+    color: var(--color-primary-strong);
+    background: var(--color-accent-tint);
+  }
+
+  /* Ghost: text-weight action for inline links and secondary paths. */
+  .btn-ghost {
+    padding: 0.5rem 0.75rem;
+    background: transparent;
+    color: var(--color-ink-soft);
+  }
+
+  .btn-ghost:hover:not(:disabled) {
+    background: var(--color-surface-sunken);
+    color: var(--color-primary-strong);
+  }
+
+  /* Soft: tinted pill action for emphasised secondary affordances. */
+  .btn-soft {
+    padding: 0.5rem 0.875rem;
+    background: var(--color-primary-soft);
+    color: var(--color-primary-strong);
+  }
+
+  .btn-soft:hover:not(:disabled) {
+    background: var(--color-primary-ring);
+  }
+
+  /* Accent: cyan highlight action, used sparingly next to the indigo primary. */
+  .btn-accent {
+    color: #06404d;
+    background-image: linear-gradient(115deg, var(--color-accent) 0%, #0f8ea8 100%);
+    box-shadow: 0 12px 26px -16px rgba(23, 168, 196, 0.85);
+  }
+
+  .btn-accent:hover:not(:disabled) {
+    background-image: linear-gradient(115deg, #2bb9d1 0%, var(--color-accent) 100%);
+    box-shadow: 0 16px 32px -14px rgba(23, 168, 196, 0.95);
+  }
+
+  /* Compact toolbar button. */
+  .btn-tool {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    padding: 0.4375rem 0.75rem;
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: var(--color-surface);
+    color: var(--color-ink-soft);
+    border: 1px solid var(--color-hairline-strong);
+    border-radius: var(--radius-control);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+  }
+
+  .btn-tool:hover:not(:disabled) {
+    border-color: var(--color-primary-ring);
+    background: var(--color-primary-tint);
+    color: var(--color-primary-strong);
+  }
+
+  .btn-tool:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  /* Square icon-only control. */
+  .btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 2.5rem;
+    width: 2.5rem;
+    flex-shrink: 0;
+    background: var(--color-surface);
+    color: var(--color-ink-soft);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-control);
+    cursor: pointer;
+    transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+  }
+
+  .btn-icon:hover:not(:disabled) {
+    border-color: var(--color-primary-ring);
+    background: var(--color-primary-tint);
+    color: var(--color-primary-strong);
+  }
+  /* ========================================================================
+     CHIPS & STATUS
+     ======================================================================== */
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.5625rem;
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    border-radius: 999px;
+    border: 1px solid var(--color-hairline);
+    background: var(--color-surface-muted);
+    color: var(--color-ink-soft);
+    white-space: nowrap;
+  }
+
+  .chip-mono {
+    font-family: var(--font-mono);
+    letter-spacing: 0.02em;
+    background: var(--color-surface-sunken);
+  }
+
+  .chip-primary {
+    background: var(--color-primary-soft);
+    border-color: var(--color-primary-ring);
+    color: var(--color-primary-strong);
+  }
+
+  .chip-accent {
+    background: var(--color-accent-soft);
+    border-color: var(--color-accent-ring);
+    color: #0d7183;
+  }
+
+  /* On gradient surfaces: translucent glass. */
+  .chip-glass {
+    background: rgba(253, 253, 255, 0.16);
+    border-color: rgba(253, 253, 255, 0.34);
+    color: var(--color-chalk);
+  }
+
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4375rem;
+    padding: 0.25rem 0.625rem;
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    white-space: nowrap;
+  }
+
+  .status-live {
+    background: var(--color-mint-soft);
+    border-color: #c3e7d9;
+    color: #4149cf;
+  }
+
+  .status-idle {
+    background: var(--color-surface-sunken);
+    border-color: var(--color-hairline);
+    color: var(--color-ink-muted);
+  }
+
+  .status-new {
+    background: var(--color-amber-soft);
+    border-color: #ead4a8;
+    color: #8a5f10;
+  }
+
+  .status-error {
+    background: var(--color-rose-soft);
+    border-color: #f0c8ce;
+    color: #a83b47;
+  }
+
+  /* Status dots, reused inside pills and as standalone markers. */
+  .dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .dot-live { background: var(--color-mint); }
+  .dot-idle { background: var(--color-ink-faint); }
+  .dot-new { background: var(--color-amber); }
+  .dot-error { background: var(--color-rose); }
+  .dot-primary { background: var(--color-primary); }
+  .dot-accent { background: var(--color-accent); }
+  /* ========================================================================
+     SIDEBAR NAVIGATION
+     ======================================================================== */
+
+  .nav-link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.625rem 0.75rem;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-ink-soft);
+    border-radius: var(--radius-control);
+    transition: background-color 0.16s ease, color 0.16s ease;
+  }
+
+  .nav-link:hover {
+    background: var(--color-surface-sunken);
+    color: var(--color-ink);
+  }
+
+  .nav-link.is-active {
+    background: linear-gradient(100deg, var(--color-primary-soft) 0%, var(--color-accent-tint) 100%);
+    color: var(--color-primary-strong);
+    font-weight: 600;
+  }
+
+  /* Active marker: a rounded gradient rail on the leading edge. */
+  .nav-link.is-active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 56%;
+    border-radius: 999px;
+    background-image: linear-gradient(180deg, var(--color-primary) 0%, var(--color-accent-strong) 100%);
+  }
+
+  /* ========================================================================
+     DATA TABLE — rounded ledger, tinted headers, soft row states
+     ======================================================================== */
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+  }
+
+  .data-table thead th {
+    padding: 0.75rem 1rem;
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-primary-strong);
+    background: linear-gradient(
+      100deg,
+      var(--color-primary-soft) 0%,
+      var(--color-surface-sunken) 46%,
+      var(--color-accent-soft) 100%
+    );
+    border-bottom: 1px solid var(--color-hairline);
+    white-space: nowrap;
+  }
+
+  .data-table tbody tr {
+    border-bottom: 1px solid var(--color-hairline);
+    transition: background-color 0.15s ease;
+  }
+
+  .data-table tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  .data-table tbody tr:hover {
+    background: var(--color-primary-tint);
+  }
+
+  .data-table tbody td {
+    padding: 0.875rem 1rem;
+    font-size: 0.8125rem;
+    color: var(--color-ink-soft);
+    vertical-align: middle;
+  }
+
+  /* Row of the signed-in account: soft indigo wash, not a highlight colour. */
+  .data-table tbody tr.is-current,
+  .data-table tbody tr.is-current:hover {
+    background: linear-gradient(90deg, var(--color-primary-soft) 0%, rgba(244, 246, 255, 0.55) 100%);
+  }
+
+  /* Detail slab revealed beneath a selected directory row. */
+  .detail-panel {
+    border-top: 1px solid var(--color-hairline);
+    background: var(--color-surface-muted);
+  }
+
+  /* Inside the directory table the slab carries its own insets, so the cell
+     padding is dropped with a matching specificity. */
+  .data-table tbody td.detail-panel {
+    padding: 0;
+  }
+
+  .detail-tile {
+    background: var(--color-surface);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-field);
+    padding: 0.6875rem 0.8125rem;
+  }
+
+  /* ========================================================================
+     APPLICATION CHROME — indigo bar above the tinted workspace
+     ======================================================================== */
+
+  /* Indigo top bar: ties the dashboard chrome to the auth brand panel. */
+  .brand-bar {
+    background-color: var(--color-primary-strong);
+    background-image:
+      radial-gradient(ellipse 55% 200% at 2% -60%, rgba(139, 92, 246, 0.26) 0%, transparent 60%),
+      linear-gradient(100deg, #5560e6 0%, #4149cf 58%, #4a54d6 100%);
+  }
+
+  /* Icon-only control that sits on the green bar. */
+  .btn-icon-onDark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 2.5rem;
+    width: 2.5rem;
+    flex-shrink: 0;
+    background: rgba(253, 253, 255, 0.12);
+    color: var(--color-chalk);
+    border: 1px solid rgba(253, 253, 255, 0.28);
+    border-radius: var(--radius-control);
+    cursor: pointer;
+    transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+  }
+
+  .btn-icon-onDark:hover:not(:disabled) {
+    background: rgba(139, 92, 246, 0.24);
+    border-color: rgba(139, 92, 246, 0.52);
+    color: #fdfdff;
+  }
+
+  /* Status pill for dark surfaces. */
+  .status-glass {
+    background: rgba(253, 253, 255, 0.14);
+    border-color: rgba(253, 253, 255, 0.3);
+    color: var(--color-chalk);
+  }
+
+  /* Glass action for dark surfaces (header sign-out on small screens). */
+  .btn-glass {
+    padding: 0.5rem 0.875rem;
+    color: var(--color-chalk);
+    background: rgba(253, 253, 255, 0.12);
+    border-color: rgba(253, 253, 255, 0.28);
+  }
+
+  .btn-glass:hover:not(:disabled) {
+    background: rgba(139, 92, 246, 0.26);
+    border-color: rgba(139, 92, 246, 0.52);
+    color: #fdfdff;
+  }
+
+  /* ========================================================================
+     MOTION — soft tonal reveals only, nothing bounces
+     ======================================================================== */
+
+  .animate-fade-up {
+    animation: fadeUp 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .animate-pulse-dot {
+    animation: pulseDot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  /* Live-session halo on a status dot. */
+  .pulse-ring::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: currentColor;
+    animation: pulseRing 2.4s ease-out infinite;
+  }
+
+  .animate-blink-soft {
+    animation: blinkSoft 1.7s ease-in-out infinite;
+  }
 }
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseDot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.85);
+  }
+}
+
+@keyframes pulseRing {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+
+@keyframes blinkSoft {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+
+
+
+
+
