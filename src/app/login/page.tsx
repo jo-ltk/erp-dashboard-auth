@@ -71,8 +71,8 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Left Hero Statement */}
-        <div className="relative z-10 max-w-lg my-auto pt-10 pb-6 lg:py-0 text-white">
+        {/* Left Hero Statement - Hidden on mobile, visible on desktop */}
+        <div className="hidden lg:block relative z-10 max-w-lg my-auto pt-10 pb-6 lg:py-0 text-white">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight drop-shadow-md leading-[1.15]">
             Hello <br />
             Naari! <span className="inline-block animate-bounce">👋</span>
@@ -82,8 +82,8 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {/* Footer note on image */}
-        <div className="relative z-10 text-xs text-white/70">
+        {/* Footer note on image - Hidden on mobile */}
+        <div className="hidden lg:block relative z-10 text-xs text-white/70">
           © {new Date().getFullYear()} Naari. All rights reserved.
         </div>
       </div>
