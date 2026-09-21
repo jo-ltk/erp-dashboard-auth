@@ -3,26 +3,18 @@
 import { useState, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { AlertCircle, Eye, EyeOff, Lock, Mail, User } from 'lucide-react'
-import BrandLockup from '@/components/BrandLockup'
-import ErpMark from '@/components/ErpMark'
+import { AlertCircle, Eye, EyeOff } from 'lucide-react'
 
 export default function SignupPage() {
   const router = useRouter()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
-  // UI-only credential fields: the auth contract below is unchanged.
   const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [department, setDepartment] = useState('Operations')
   const [role, setRole] = useState('Analyst')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-
-  // Presentational only — never gates the request below.
-  const passwordsDiffer =
-    confirmPassword.length > 0 && password !== confirmPassword
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -30,7 +22,6 @@ export default function SignupPage() {
     setLoading(true)
 
     try {
-      // Auth call unchanged: /api/auth/signup takes name, email, department, role.
       const res = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -44,7 +35,6 @@ export default function SignupPage() {
         return
       }
 
-      // Mark as visited so subsequent visits go to login
       if (typeof window !== 'undefined') {
         localStorage.setItem('naari_has_visited', 'true')
       }
@@ -58,282 +48,215 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="auth-canvas relative min-h-screen w-full overflow-hidden text-ink">
-      {/* Ambient light behind the sheets */}
-      <span aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
-        <span className="orb orb-violet -left-28 -top-32 h-[26rem] w-[26rem]" />
-        <span className="orb orb-cyan right-[-9rem] top-[15rem] h-[22rem] w-[22rem]" />
-      </span>
+    <div className="min-h-screen w-full flex flex-col lg:flex-row bg-[#11162b] text-slate-800">
+      {/* ------------------------------------------------------------------
+          Left Side: Image Showcase Panel
+         ------------------------------------------------------------------ */}
+      <div className="relative flex-1 min-h-[380px] lg:min-h-screen overflow-hidden flex flex-col justify-between p-8 sm:p-12 lg:p-16">
+        {/* Background Image */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/signup-bg.png"
+          alt="Naari Workspace"
+          className="absolute inset-0 h-full w-full object-cover object-center"
+        />
 
-      <div className="relative mx-auto flex min-h-screen w-full max-w-[1440px] flex-col gap-5 p-4 sm:p-6 lg:flex-row lg:gap-6 lg:p-7">
-        {/* ------------------------------------------------------------------
-            Brand panel — mirrors the login sheet.
-           ------------------------------------------------------------------ */}
-        <aside className="brand-panel relative flex flex-col overflow-hidden rounded-3xl px-6 py-7 text-chalk sm:px-9 lg:w-[44%] lg:max-w-[560px] lg:px-12 lg:py-12">
-          <span aria-hidden="true" className="dot-matrix pointer-events-none absolute inset-0 opacity-40" />
-          <span
-            aria-hidden="true"
-            className="pointer-events-none absolute -right-20 -top-24 h-60 w-60 rounded-full bg-chalk/20 blur-3xl"
-          />
+        {/* Subtle gradient vignette to blend smoothly toward the right white section */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30 lg:bg-gradient-to-r lg:from-black/30 lg:via-transparent lg:to-black/30 pointer-events-none" />
 
-          <div className="relative flex items-start justify-between gap-4">
-            <BrandLockup tone="brand" />
-            <span className="chip chip-glass hidden sm:inline-flex">New Account</span>
+        {/* Brand Logo / Spark Mark on Top Left */}
+        <div className="relative z-10">
+          <div className="flex items-center gap-3">
+            <span className="text-3xl text-white font-bold select-none">✻</span>
+            <span className="text-2xl font-bold tracking-tight text-white drop-shadow">Naari</span>
+          </div>
+        </div>
+
+        {/* Left Hero Statement */}
+        <div className="relative z-10 max-w-lg my-auto pt-10 pb-6 lg:py-0 text-white">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight drop-shadow-md leading-[1.15]">
+            Join <br />
+            Naari! <span className="inline-block animate-bounce">✨</span>
+          </h1>
+          <p className="mt-5 text-sm sm:text-base leading-relaxed text-white/90 drop-shadow max-w-md">
+            Create your workspace record in seconds. Join your team, organize accounts, and get productive immediately!
+          </p>
+        </div>
+
+        {/* Footer note on image */}
+        <div className="relative z-10 text-xs text-white/70">
+          © {new Date().getFullYear()} Naari. All rights reserved.
+        </div>
+      </div>
+
+      {/* ------------------------------------------------------------------
+          Right Side: Clean Minimalist White Form Panel (SalesSkip style)
+         ------------------------------------------------------------------ */}
+      <div className="w-full lg:w-[500px] xl:w-[560px] bg-white flex flex-col justify-center px-8 py-10 sm:px-14 lg:px-16 shadow-2xl relative z-10">
+        <div className="w-full max-w-[390px] mx-auto">
+          {/* Top Brand Title */}
+          <div className="mb-8">
+            <span className="text-2xl font-bold tracking-tight text-slate-900">Naari</span>
           </div>
 
-          <div className="relative mt-8 lg:mt-auto lg:pt-12">
-            <span className="eyebrow text-chalk/70">Enterprise Resource Planning</span>
-            <h1 className="display mt-3 text-[2.125rem] text-chalk sm:text-[2.75rem] lg:text-[3.25rem]">
-              Create your
-              <br className="hidden sm:block" /> workspace record<span className="text-accent">.</span>
-            </h1>
-            <span aria-hidden="true" className="mt-5 block h-1.5 w-16 rounded-full bg-accent" />
-            <p className="mt-4 max-w-[38ch] text-sm leading-relaxed text-chalk/80">
-              Create your record with a department and role. Your account is
-              signed in and listed in the directory immediately.
-            </p>
-
-            <div className="mt-8 hidden lg:block">
-              <span className="inline-flex items-center gap-2 rounded-full border border-chalk/25 bg-chalk/15 px-3.5 py-1.5 text-[11px] font-semibold text-chalk">
-                <span className="dot dot-live pulse-ring relative text-mint" />
-                Secure session channel
-              </span>
-            </div>
-          </div>
-        </aside>
-
-        {/* ------------------------------------------------------------------
-            Registration panel.
-           ------------------------------------------------------------------ */}
-        <main className="flex flex-1 items-center justify-center px-1 py-2 sm:px-4 lg:px-8">
-          <div className="animate-fade-up w-full max-w-[470px]">
-            <div className="card p-6 sm:p-8">
-              {/* Panel header */}
-              <div className="flex items-center justify-between gap-3">
-                <span className="eyebrow text-primary">Registration</span>
-                <span className="chip chip-accent">Sign up</span>
-              </div>
-              <h2 className="display mt-4 text-[1.75rem] text-ink">Create record</h2>
-              <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-                Fill in your details to open a new ERP account.
-              </p>
-
-              <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-                {/* Full Name */}
-                <div>
-                  <label htmlFor="name" className="field-label">
-                    Full name
-                  </label>
-                  <div className={`field${error ? ' is-error' : ''}`}>
-                    <span className="pl-3.5 pr-2.5 text-ink-faint">
-                      <User className="h-4 w-4" strokeWidth={1.75} />
-                    </span>
-                    <input
-                      id="name"
-                      type="text"
-                      autoComplete="name"
-                      required
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder="full name"
-                      className="field-input"
-                    />
-                  </div>
-                </div>
-
-                {/* Email Address */}
-                <div>
-                  <label htmlFor="email" className="field-label">
-                    Work email
-                  </label>
-                  <div className={`field${error ? ' is-error' : ''}`}>
-                    <span className="pl-3.5 pr-2.5 text-ink-faint">
-                      <Mail className="h-4 w-4" strokeWidth={1.75} />
-                    </span>
-                    <input
-                      id="email"
-                      type="email"
-                      autoComplete="email"
-                      required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="work email"
-                      className="field-input"
-                    />
-                  </div>
-                </div>
-
-                {/* Password */}
-                <div>
-                  <label htmlFor="password" className="field-label">
-                    Password
-                  </label>
-                  <div className={`field${error ? ' is-error' : ''}`}>
-                    <span className="pl-3.5 pr-2.5 text-ink-faint">
-                      <Lock className="h-4 w-4" strokeWidth={1.75} />
-                    </span>
-                    <input
-                      id="password"
-                      type={showPassword ? 'text' : 'password'}
-                      autoComplete="new-password"
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="Create a password"
-                      className="field-input"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword((v) => !v)}
-                      className="field-action"
-                      aria-label={showPassword ? 'Hide password' : 'Show password'}
-                      aria-pressed={showPassword}
-                    >
-                      {showPassword ? (
-                        <EyeOff className="h-4 w-4" strokeWidth={1.75} />
-                      ) : (
-                        <Eye className="h-4 w-4" strokeWidth={1.75} />
-                      )}
-                    </button>
-                  </div>
-                </div>
-
-                {/* Confirm Password */}
-                <div>
-                  <label htmlFor="confirm-password" className="field-label">
-                    Confirm password
-                  </label>
-                  <div
-                    className={`field${passwordsDiffer || error ? ' is-error' : ''}`}
-                  >
-                    <span className="pl-3.5 pr-2.5 text-ink-faint">
-                      <Lock className="h-4 w-4" strokeWidth={1.75} />
-                    </span>
-                    <input
-                      id="confirm-password"
-                      type={showPassword ? 'text' : 'password'}
-                      autoComplete="new-password"
-                      required
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      placeholder="Repeat your password"
-                      className="field-input"
-                    />
-                  </div>
-                  {/* Presentational feedback only — submission is never blocked. */}
-                  <p
-                    aria-live="polite"
-                    className={`mt-1.5 text-[11px] font-medium ${
-                      passwordsDiffer ? 'text-rose' : 'text-transparent'
-                    }`}
-                  >
-                    {passwordsDiffer ? 'Passwords do not match' : 'No mismatch'}
-                  </p>
-                </div>
-
-                {/* Department & Role */}
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <div>
-                    <label htmlFor="department" className="field-label">
-                      Department
-                    </label>
-                    <div className="select-slot">
-                      <select
-                        id="department"
-                        value={department}
-                        onChange={(e) => setDepartment(e.target.value)}
-                        className="select-input"
-                      >
-                        <option value="Operations">Operations</option>
-                        <option value="Engineering">Engineering</option>
-                        <option value="Finance">Finance</option>
-                        <option value="Information Technology">IT</option>
-                        <option value="Human Resources">HR</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label htmlFor="role" className="field-label">
-                      Role
-                    </label>
-                    <div className="select-slot">
-                      <select
-                        id="role"
-                        value={role}
-                        onChange={(e) => setRole(e.target.value)}
-                        className="select-input"
-                      >
-                        <option value="Analyst">Analyst</option>
-                        <option value="Manager">Manager</option>
-                        <option value="Engineer">Engineer</option>
-                        <option value="Director">Director</option>
-                        <option value="Standard User">Standard User</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Error Message */}
-                {error && (
-                  <div
-                    role="alert"
-                    className="flex items-start gap-2.5 rounded-3xl border border-rose/25 bg-rose-soft px-4 py-3 text-xs font-medium text-rose"
-                  >
-                    <AlertCircle className="mt-px h-4 w-4 shrink-0" />
-                    <span>{error}</span>
-                  </div>
-                )}
-
-                {/* Product signature */}
-                <div className="flex items-center justify-end pt-1">
-                  <span className="flex select-none items-center gap-1.5 text-[11px] font-semibold text-ink-faint">
-                    Powered by
-                    <span className="flex items-center gap-1.5">
-                      <span className="brand-tile h-5 w-5 p-1">
-                        <ErpMark className="h-full w-full" />
-                      </span>
-                      <span className="text-ink-soft">
-                        ERP<span className="text-ink-faint">.net</span>
-                      </span>
-                    </span>
-                  </span>
-                </div>
-
-                {/* Submit Button */}
-                <button
-                  type="submit"
-                  disabled={loading}
-                  id="signup-submit"
-                  className="btn btn-primary w-full"
-                >
-                  {loading ? (
-                    <>
-                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-chalk/40 border-t-chalk" />
-                      Creating account...
-                    </>
-                  ) : (
-                    'Register'
-                  )}
-                </button>
-              </form>
-            </div>
-
-            {/* Footer link */}
-            <div className="mt-5 flex flex-wrap items-center justify-between gap-3 px-1">
+          {/* Heading */}
+          <div className="mb-6">
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
+              Get Started!
+            </h2>
+            <p className="mt-2 text-xs sm:text-sm text-slate-500">
+              Already have an account?{' '}
               <Link
                 href="/login"
-                className="text-xs font-semibold text-primary transition-colors hover:text-primary-strong"
+                className="font-semibold text-slate-900 underline underline-offset-2 hover:text-black transition-colors"
               >
-                Already have an account? Log in
+                Log in here
               </Link>
-            </div>
+            </p>
           </div>
-        </main>
+
+          {/* Error Message */}
+          {error && (
+            <div
+              role="alert"
+              className="mb-5 flex items-start gap-2.5 rounded-xl border border-red-200 bg-red-50 p-3.5 text-xs font-medium text-red-600 animate-fade-in"
+            >
+              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
+
+          {/* Minimal Form */}
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
+            {/* Full Name field */}
+            <div>
+              <div className="relative border-b-2 border-slate-200 focus-within:border-slate-900 transition-colors pb-1">
+                <input
+                  id="name"
+                  type="text"
+                  autoComplete="name"
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Full Name"
+                  className="w-full bg-transparent py-1.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none"
+                />
+              </div>
+            </div>
+
+            {/* Email field */}
+            <div>
+              <div className="relative border-b-2 border-slate-200 focus-within:border-slate-900 transition-colors pb-1">
+                <input
+                  id="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Work Email"
+                  className="w-full bg-transparent py-1.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none"
+                />
+              </div>
+            </div>
+
+            {/* Password field */}
+            <div>
+              <div className="relative border-b-2 border-slate-200 focus-within:border-slate-900 transition-colors pb-1 flex items-center">
+                <input
+                  id="password"
+                  type={showPassword ? 'text' : 'password'}
+                  autoComplete="new-password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Password"
+                  className="w-full bg-transparent py-1.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  className="text-slate-400 hover:text-slate-600 p-1"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Department & Role Fields */}
+            <div className="grid grid-cols-2 gap-4 pt-1">
+              <div>
+                <label htmlFor="department" className="block text-xs font-semibold text-slate-600 mb-1">
+                  Department
+                </label>
+                <div className="relative border-b-2 border-slate-200 focus-within:border-slate-900 transition-colors pb-1">
+                  <select
+                    id="department"
+                    value={department}
+                    onChange={(e) => setDepartment(e.target.value)}
+                    className="w-full bg-transparent py-1 text-sm text-slate-900 focus:outline-none cursor-pointer"
+                  >
+                    <option value="Operations">Operations</option>
+                    <option value="Engineering">Engineering</option>
+                    <option value="Finance">Finance</option>
+                    <option value="Information Technology">IT</option>
+                    <option value="Human Resources">HR</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="role" className="block text-xs font-semibold text-slate-600 mb-1">
+                  Role
+                </label>
+                <div className="relative border-b-2 border-slate-200 focus-within:border-slate-900 transition-colors pb-1">
+                  <select
+                    id="role"
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                    className="w-full bg-transparent py-1 text-sm text-slate-900 focus:outline-none cursor-pointer"
+                  >
+                    <option value="Analyst">Analyst</option>
+                    <option value="Manager">Manager</option>
+                    <option value="Engineer">Engineer</option>
+                    <option value="Director">Director</option>
+                    <option value="Standard User">Standard User</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Register / Create Account Button */}
+            <div className="pt-3">
+              <button
+                type="submit"
+                disabled={loading}
+                id="signup-submit"
+                className="w-full rounded-lg bg-gradient-to-r from-indigo-600 via-indigo-700 to-blue-600 py-3.5 px-4 text-sm font-semibold text-white shadow-lg shadow-indigo-600/25 hover:from-indigo-700 hover:to-blue-700 active:scale-[0.99] transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {loading ? (
+                  <>
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                    <span>Creating account...</span>
+                  </>
+                ) : (
+                  'Create Account'
+                )}
+              </button>
+            </div>
+          </form>
+
+          {/* Footer note */}
+          <div className="mt-6 pt-3 text-center border-t border-slate-100 text-xs text-slate-500">
+            By signing up, you agree to our Terms and Privacy Policy.
+          </div>
+        </div>
       </div>
     </div>
   )
 }
-
-
-

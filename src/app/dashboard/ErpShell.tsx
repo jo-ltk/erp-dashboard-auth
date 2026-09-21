@@ -197,8 +197,8 @@ export default function ErpShell({
             {/* Footer */}
             <footer className="border-t border-hairline px-4 py-4 sm:px-7">
               <div className="mx-auto flex max-w-[1240px] flex-wrap items-center justify-between gap-2 text-xs">
-                <span className="text-ink-muted">ERP.net Dashboard</span>
-                <span className="text-ink-faint">Enterprise Edition</span>
+                <span className="text-ink-muted">Naari Dashboard</span>
+                <span className="text-ink-faint">Enterprise Workspace</span>
               </div>
             </footer>
           </div>

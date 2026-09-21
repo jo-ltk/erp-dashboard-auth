@@ -31,10 +31,10 @@ export default function BrandLockup({
       </span>
       <span className="flex items-baseline gap-0.5">
         <span className={`display ${size === 'sm' ? 'text-lg' : 'text-xl'} ${isBrand ? 'text-chalk' : 'text-ink'}`}>
-          ERP
+          Naari
         </span>
-        <span className={`font-semibold ${size === 'sm' ? 'text-xs' : 'text-sm'} ${isBrand ? 'text-chalk/70' : 'text-ink-faint'}`}>
-          .net
+        <span className={`font-semibold ${size === 'sm' ? 'text-xs' : 'text-sm'} ${isBrand ? 'text-chalk/70' : 'text-accent-strong'}`}>
+          .health
         </span>
       </span>
     </span>
