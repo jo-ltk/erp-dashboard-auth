@@ -7,8 +7,8 @@ export default function RootHomePage() {
   const router = useRouter()
 
   useEffect(() => {
-    // Always go to login; after successful login the user is sent to /dashboard
-    router.replace('/login')
+    // Direct users to /signup first as the initial entrypoint
+    router.replace('/signup')
   }, [router])
 
   return (
