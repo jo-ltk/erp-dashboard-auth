@@ -1,3 +1,13 @@
+# erp-dashboard-auth
+
+Modern ERP authentication + dashboard (Next.js 16, React 19, Tailwind CSS v4).
+
+- Login and Sign Up with a rounded, soft indigo/violet design system
+- Role-protected dashboard: account details and user directory
+- Deployed-ready route handlers for auth (session JWT cookies) and the account directory
+
+---
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
